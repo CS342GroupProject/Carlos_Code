@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Human extends Player {
 	private static Human instance;
@@ -7,7 +8,9 @@ public class Human extends Player {
 	 * Assign actualNumber to the value that human set for the computer to guess.
 	 */
 	private Human(String actualNum) {
-		this.actualNumber = actualNum;
+		mySecret = actualNum;
+		previousResults = new ArrayList<Result>(12);
+		previousGuesses = new ArrayList<String>(12);
 	}
 	
 	/* 
@@ -25,9 +28,7 @@ public class Human extends Player {
 	 */
 	String makeGuess() {
 		guess = Client.getGuess();
+		//addToGuesses(guess);
 		return guess;
 	}
-	
-	
-	
 }

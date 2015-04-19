@@ -11,19 +11,19 @@ public class GameController {
 	 * @param humanActualNumber - the number set by the human for the computer to guess
 	 * @param difficulty - Difficulty of the computer, set by the human.
 	 */
-	private GameController(String humanActualNumber, String difficulty) {
+	private GameController(String humanActualNumber) {
 		currentRound = 1;
 		humanTurn = true;
 		human = Human.getInstance(humanActualNumber);
-		computer = Computer.getInstance(difficulty);
+		computer = Computer.getInstance();//difficulty);
 	}
 	
 	/* 
 	 * Creates and returns instance if it doesn't already exist, and returns instance otherwise.
 	 */
-	public static GameController getInstance(String humanActualNumber, String difficulty) {
+	public static GameController getInstance(String humanActualNumber) {
 		if (instance == null)
-			instance = new GameController(humanActualNumber, difficulty);
+			instance = new GameController(humanActualNumber);
 		return instance;
 	}
 	
@@ -56,23 +56,22 @@ public class GameController {
 	private int[] humanTurn() {
 		int array[] = new int[3];
 		String s = null;
-		Pair p;
+		Result p;
 		
 		while (s == null) {
 			s = human.makeGuess(); // should either return a *correct* string or null
 		}
-		human.guess = s;
 		
-		p = human.evaluate(human.guess, computer.actualNumber);
+		p = human.evaluate(s, computer.getMySecret());
 		
 		// If 4 are in the right place, the human has won.
-		if (p.correctPlace == 4) 
+		if (p.getCorrectPlaces() == 4) 
 			array[0] = -1;
 		else 
 			array[0] = currentRound;
 		
-		array[1] = p.correctPlace;
-		array[2] = p.wrongPlace;
+		array[1] = p.getCorrectPlaces();
+		array[2] = p.getWrongPlaces();
 		
 		return array;
 	}
@@ -83,23 +82,23 @@ public class GameController {
 	 * computer calls evaluate() to return a Pair of format: 
 	 * 		<numberCorrentInCorrectPosition, numberCorrectInWrongPosition>
 	 */
-	private int[] humanTurn() {
+	private int[]  computerTurn() {
 		int array[] = new int[3];
-		String s = null;
-		Pair p;
+		String s;
+		Result p;
 		
-		computer.makeGuess();
+		s = computer.makeGuess();
 		
-		p = computer.evaluate(computer.guess, human.actualNumber);
+		p = computer.evaluate(s, human.getMySecret());
 		
 		// If 4 are in the right place, the computer has won.
-		if (p.correctPlace == 4) 
+		if (p.getCorrectPlaces() == 4) 
 			array[0] = -1;
 		else 
 			array[0] = currentRound;
 		
-		array[1] = p.correctPlace;
-		array[2] = p.wrongPlace;
+		array[1] = p.getCorrectPlaces();
+		array[2] = p.getWrongPlaces();
 		
 		return array;
 	}
